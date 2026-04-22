@@ -3,6 +3,7 @@ const express = require('express');
 const cors = require('cors');
 const mysql = require('mysql2/promise');
 const path = require('path');
+const bcrypt = require('bcrypt');
 
 const app = express();
 app.use(cors());
@@ -73,6 +74,13 @@ async function iniciarBanco() {
       criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )
   `);
+  // Cria admin padrão se não existir nenhum usuário
+  const [users] = await conn.query('SELECT id FROM usuarios LIMIT 1');
+  if (users.length === 0) {
+    const hash = await bcrypt.hash('admin123', 10);
+    await conn.query('INSERT INTO usuarios (nome, senha) VALUES (?, ?)', ['admin', hash]);
+    console.log('Usuário admin criado — login: admin / senha: admin123');
+  }
   conn.release();
   console.log('Tabelas verificadas/criadas com sucesso');
 }
