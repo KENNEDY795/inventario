@@ -23,7 +23,6 @@
       box-shadow: 0 4px 24px rgba(0,0,0,0.1);
     }
     .logo { text-align: center; margin-bottom: 1.75rem; }
-    .logo h1 { font-size: 1.4rem; color: #1e40af; font-weight: 700; }
     .marca-login { display: flex; gap: 0.15rem; justify-content: center; }
     .marca-fama { font-size: 2rem; font-weight: 900; color: #1e40af; letter-spacing: 0.05em; }
     .marca-tech { font-size: 2rem; font-weight: 900; color: #2563eb; letter-spacing: 0.05em; }
@@ -47,7 +46,7 @@
       transition: border-color 0.2s;
     }
     input:focus { outline: none; border-color: #2563eb; box-shadow: 0 0 0 3px rgba(37,99,235,0.1); }
-    button {
+    .btn-principal {
       width: 100%;
       padding: 0.7rem;
       background: #2563eb;
@@ -59,16 +58,34 @@
       cursor: pointer;
       transition: background 0.2s;
     }
-    button:hover { background: #1d4ed8; }
-    .erro {
-      background: #fee2e2;
-      color: #991b1b;
-      border: 1px solid #fecaca;
+    .btn-principal:hover { background: #1d4ed8; }
+    .alerta {
       border-radius: 6px;
       padding: 0.65rem 0.85rem;
       font-size: 0.88rem;
       margin-bottom: 1rem;
       display: none;
+    }
+    .alerta.erro   { background: #fee2e2; color: #991b1b; border: 1px solid #fecaca; }
+    .alerta.sucesso{ background: #d1fae5; color: #065f46; border: 1px solid #a7f3d0; }
+    .trocar {
+      text-align: center;
+      margin-top: 1.25rem;
+      font-size: 0.88rem;
+      color: #6b7280;
+    }
+    .trocar a {
+      color: #2563eb;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+    }
+    .trocar a:hover { text-decoration: underline; }
+    .titulo-form {
+      font-size: 1rem;
+      font-weight: 700;
+      color: #1e40af;
+      margin-bottom: 1.25rem;
     }
   </style>
 </head>
@@ -77,30 +94,77 @@
     <div class="logo">
       <div class="marca-login"><span class="marca-fama">FAMA</span><span class="marca-tech">TECH</span></div>
       <p style="color:#6b7280;font-size:0.85rem;margin-top:0.25rem">Sistema de Inventário</p>
-      <p style="color:#9ca3af;font-size:0.8rem;margin-top:0.1rem">Faça login para continuar</p>
     </div>
-    <div id="erro" class="erro"></div>
-    <form id="form-login">
-      <label for="nome">Usuário</label>
-      <input type="text" id="nome" placeholder="Seu usuário" required autofocus />
-      <label for="senha">Senha</label>
-      <input type="password" id="senha" placeholder="Sua senha" required />
-      <button type="submit">Entrar</button>
-    </form>
+
+    <div id="alerta" class="alerta"></div>
+
+    <!-- Formulário de Login -->
+    <div id="tela-login">
+      <div class="titulo-form">Entrar na conta</div>
+      <form id="form-login">
+        <label for="login-nome">Usuário</label>
+        <input type="text" id="login-nome" placeholder="Seu usuário" required autofocus />
+        <label for="login-senha">Senha</label>
+        <input type="password" id="login-senha" placeholder="Sua senha" required />
+        <button type="submit" class="btn-principal">Entrar</button>
+      </form>
+      <div class="trocar">
+        Não tem conta? <a onclick="mostrarCadastro()">Criar conta</a>
+      </div>
+    </div>
+
+    <!-- Formulário de Cadastro -->
+    <div id="tela-cadastro" style="display:none">
+      <div class="titulo-form">Criar nova conta</div>
+      <form id="form-cadastro">
+        <label for="cad-nome">Usuário</label>
+        <input type="text" id="cad-nome" placeholder="Escolha um usuário" required />
+        <label for="cad-senha">Senha</label>
+        <input type="password" id="cad-senha" placeholder="Escolha uma senha" required minlength="6" />
+        <label for="cad-confirma">Confirmar senha</label>
+        <input type="password" id="cad-confirma" placeholder="Repita a senha" required />
+        <button type="submit" class="btn-principal">Criar conta</button>
+      </form>
+      <div class="trocar">
+        Já tem conta? <a onclick="mostrarLogin()">Fazer login</a>
+      </div>
+    </div>
   </div>
+
   <script>
-    const API = '/api/auth/login';
+    const alerta = document.getElementById('alerta');
+
+    function mostrarAlerta(msg, tipo) {
+      alerta.textContent = msg;
+      alerta.className = `alerta ${tipo}`;
+      alerta.style.display = 'block';
+    }
+
+    function mostrarCadastro() {
+      document.getElementById('tela-login').style.display = 'none';
+      document.getElementById('tela-cadastro').style.display = 'block';
+      alerta.style.display = 'none';
+      document.getElementById('cad-nome').focus();
+    }
+
+    function mostrarLogin() {
+      document.getElementById('tela-cadastro').style.display = 'none';
+      document.getElementById('tela-login').style.display = 'block';
+      alerta.style.display = 'none';
+      document.getElementById('login-nome').focus();
+    }
+
+    // Login
     document.getElementById('form-login').addEventListener('submit', async (e) => {
       e.preventDefault();
-      const erro = document.getElementById('erro');
-      erro.style.display = 'none';
+      alerta.style.display = 'none';
       try {
-        const res = await fetch(API, {
+        const res = await fetch('/api/auth/login', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            nome: document.getElementById('nome').value.trim(),
-            senha: document.getElementById('senha').value,
+            nome: document.getElementById('login-nome').value.trim(),
+            senha: document.getElementById('login-senha').value,
           }),
         });
         const dados = await res.json();
@@ -109,11 +173,35 @@
         localStorage.setItem('inventario_usuario', dados.nome);
         window.location.href = 'index.html';
       } catch (err) {
-        erro.textContent = err.message;
-        erro.style.display = 'block';
+        mostrarAlerta(err.message, 'erro');
       }
     });
-    // Se já logado, vai direto para o sistema
+
+    // Cadastro
+    document.getElementById('form-cadastro').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      alerta.style.display = 'none';
+      const nome  = document.getElementById('cad-nome').value.trim();
+      const senha = document.getElementById('cad-senha').value;
+      const conf  = document.getElementById('cad-confirma').value;
+      if (senha !== conf) { mostrarAlerta('As senhas não coincidem.', 'erro'); return; }
+      if (senha.length < 6) { mostrarAlerta('A senha deve ter pelo menos 6 caracteres.', 'erro'); return; }
+      try {
+        const res = await fetch('/api/auth/registrar', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ nome, senha }),
+        });
+        const dados = await res.json();
+        if (!res.ok) throw new Error(dados.erro || 'Erro ao criar conta');
+        mostrarAlerta(`Conta "${nome}" criada! Faça o login.`, 'sucesso');
+        document.getElementById('form-cadastro').reset();
+        setTimeout(mostrarLogin, 2000);
+      } catch (err) {
+        mostrarAlerta(err.message, 'erro');
+      }
+    });
+
     if (localStorage.getItem('inventario_token')) window.location.href = 'index.html';
   </script>
 </body>
