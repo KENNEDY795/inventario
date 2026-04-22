@@ -42,12 +42,46 @@ app.use((err, req, res, next) => {
   res.status(500).json({ erro: 'Erro interno do servidor' });
 });
 
+async function iniciarBanco() {
+  const conn = await pool.getConnection();
+  await conn.query(`
+    CREATE TABLE IF NOT EXISTS produtos (
+      id          INT AUTO_INCREMENT PRIMARY KEY,
+      nome        VARCHAR(100)  NOT NULL,
+      quantidade  INT           NOT NULL DEFAULT 0,
+      preco       DECIMAL(10,2) NOT NULL DEFAULT 0,
+      categoria   VARCHAR(50)   NOT NULL,
+      lancado_por VARCHAR(100)  DEFAULT NULL,
+      criado_em   TIMESTAMP     DEFAULT CURRENT_TIMESTAMP
+    )
+  `);
+  await conn.query(`
+    CREATE TABLE IF NOT EXISTS historico (
+      id           INT AUTO_INCREMENT PRIMARY KEY,
+      acao         VARCHAR(20)  NOT NULL,
+      produto_id   INT,
+      produto_nome VARCHAR(100),
+      usuario      VARCHAR(100),
+      realizado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )
+  `);
+  await conn.query(`
+    CREATE TABLE IF NOT EXISTS usuarios (
+      id        INT AUTO_INCREMENT PRIMARY KEY,
+      nome      VARCHAR(100) NOT NULL UNIQUE,
+      senha     VARCHAR(255) NOT NULL,
+      criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )
+  `);
+  conn.release();
+  console.log('Tabelas verificadas/criadas com sucesso');
+}
+
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, async () => {
   try {
-    const conn = await pool.getConnection();
+    await iniciarBanco();
     console.log('Conectado ao banco de dados MySQL');
-    conn.release();
   } catch (err) {
     console.error('Erro ao conectar ao banco:', err.message);
   }
