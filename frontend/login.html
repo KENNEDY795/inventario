@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Login — Sistema de Inventário</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #f0f2f5;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .card {
+      background: white;
+      border-radius: 12px;
+      padding: 2.5rem 2rem;
+      width: 100%;
+      max-width: 380px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.1);
+    }
+    .logo { text-align: center; margin-bottom: 1.75rem; }
+    .logo h1 { font-size: 1.4rem; color: #1e40af; font-weight: 700; }
+    .marca-login { display: flex; gap: 0.15rem; justify-content: center; }
+    .marca-fama { font-size: 2rem; font-weight: 900; color: #1e40af; letter-spacing: 0.05em; }
+    .marca-tech { font-size: 2rem; font-weight: 900; color: #2563eb; letter-spacing: 0.05em; }
+    .logo p { font-size: 0.85rem; color: #6b7280; margin-top: 0.25rem; }
+    label {
+      display: block;
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: #555;
+      margin-bottom: 0.3rem;
+    }
+    input {
+      width: 100%;
+      padding: 0.65rem 0.85rem;
+      border: 1px solid #d1d5db;
+      border-radius: 7px;
+      font-size: 0.95rem;
+      margin-bottom: 1rem;
+      transition: border-color 0.2s;
+    }
+    input:focus { outline: none; border-color: #2563eb; box-shadow: 0 0 0 3px rgba(37,99,235,0.1); }
+    button {
+      width: 100%;
+      padding: 0.7rem;
+      background: #2563eb;
+      color: white;
+      border: none;
+      border-radius: 7px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    button:hover { background: #1d4ed8; }
+    .erro {
+      background: #fee2e2;
+      color: #991b1b;
+      border: 1px solid #fecaca;
+      border-radius: 6px;
+      padding: 0.65rem 0.85rem;
+      font-size: 0.88rem;
+      margin-bottom: 1rem;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="logo">
+      <div class="marca-login"><span class="marca-fama">FAMA</span><span class="marca-tech">TECH</span></div>
+      <p style="color:#6b7280;font-size:0.85rem;margin-top:0.25rem">Sistema de Inventário</p>
+      <p style="color:#9ca3af;font-size:0.8rem;margin-top:0.1rem">Faça login para continuar</p>
+    </div>
+    <div id="erro" class="erro"></div>
+    <form id="form-login">
+      <label for="nome">Usuário</label>
+      <input type="text" id="nome" placeholder="Seu usuário" required autofocus />
+      <label for="senha">Senha</label>
+      <input type="password" id="senha" placeholder="Sua senha" required />
+      <button type="submit">Entrar</button>
+    </form>
+  </div>
+  <script>
+    const API = '/api/auth/login';
+    document.getElementById('form-login').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const erro = document.getElementById('erro');
+      erro.style.display = 'none';
+      try {
+        const res = await fetch(API, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            nome: document.getElementById('nome').value.trim(),
+            senha: document.getElementById('senha').value,
+          }),
+        });
+        const dados = await res.json();
+        if (!res.ok) throw new Error(dados.erro || 'Erro ao fazer login');
+        localStorage.setItem('inventario_token', dados.token);
+        localStorage.setItem('inventario_usuario', dados.nome);
+        window.location.href = 'index.html';
+      } catch (err) {
+        erro.textContent = err.message;
+        erro.style.display = 'block';
+      }
+    });
+    // Se já logado, vai direto para o sistema
+    if (localStorage.getItem('inventario_token')) window.location.href = 'index.html';
+  </script>
+</body>
+</html>

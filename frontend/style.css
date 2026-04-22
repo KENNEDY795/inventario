@@ -1,0 +1,380 @@
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: #f0f2f5;
+  color: #333;
+  min-height: 100vh;
+}
+
+/* Header */
+header {
+  background: #2563eb;
+  color: white;
+  padding: 0.85rem 2rem;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.header-marca { display: flex; align-items: baseline; gap: 0.2rem; flex-wrap: wrap; }
+
+.marca-fama {
+  font-size: 1.6rem;
+  font-weight: 900;
+  color: #ffffff;
+  letter-spacing: 0.05em;
+}
+
+.marca-tech {
+  font-size: 1.6rem;
+  font-weight: 900;
+  color: #93c5fd;
+  letter-spacing: 0.05em;
+}
+
+.marca-sub {
+  font-size: 0.78rem;
+  color: #bfdbfe;
+  font-weight: 400;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-left: 0.75rem;
+  align-self: center;
+}
+
+.usuario-bar { display: flex; align-items: center; gap: 0.75rem; font-size: 0.9rem; }
+
+#usuario-nome { font-weight: 500; }
+
+.btn-logout {
+  padding: 0.3rem 0.85rem;
+  background: rgba(255,255,255,0.15);
+  color: white;
+  border: 1px solid rgba(255,255,255,0.3);
+  border-radius: 6px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.btn-logout:hover { background: rgba(255,255,255,0.25); }
+
+/* Main */
+main {
+  max-width: 1100px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* Sections */
+.form-section, .lista-section {
+  background: white;
+  border-radius: 10px;
+  padding: 1.5rem;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+}
+
+.form-section h2, .lista-section h2 {
+  font-size: 1.1rem;
+  color: #1e40af;
+  margin-bottom: 1rem;
+}
+
+/* Form grid */
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+.campo label {
+  display: block;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #555;
+  margin-bottom: 0.3rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.campo input[type="text"],
+.campo input[type="number"],
+.campo select {
+  width: 100%;
+  padding: 0.55rem 0.75rem;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  background: white;
+  transition: border-color 0.2s;
+}
+
+.campo input:focus, .campo select:focus {
+  outline: none;
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37,99,235,0.1);
+}
+
+.campo-invalido {
+  border-color: #ef4444 !important;
+  box-shadow: 0 0 0 3px rgba(239,68,68,0.1) !important;
+}
+
+/* Calculadora de quantidade */
+.campo-calc { min-width: 220px; }
+
+.calc-entrada {
+  display: flex;
+  gap: 0.4rem;
+}
+
+.calc-entrada input {
+  flex: 1;
+}
+
+#btn-add-parcela {
+  padding: 0.5rem 0.75rem;
+  background: #059669;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.2s;
+}
+
+#btn-add-parcela:hover { background: #047857; }
+
+.calc-display {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.4rem;
+  background: #f0fdf4;
+  border: 1px solid #a7f3d0;
+  border-radius: 6px;
+  padding: 0.35rem 0.65rem;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: #065f46;
+}
+
+.calc-display span { flex: 1; }
+
+#btn-limpar-calc {
+  padding: 0.15rem 0.45rem;
+  background: #fee2e2;
+  color: #991b1b;
+  border: none;
+  border-radius: 4px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  cursor: pointer;
+  line-height: 1.4;
+}
+
+#btn-limpar-calc:hover { background: #fecaca; }
+
+/* Autocomplete */
+.input-com-botao {
+  display: flex;
+  gap: 0.4rem;
+}
+
+.autocomplete-wrapper {
+  position: relative;
+  flex: 1;
+}
+
+.autocomplete-wrapper input[type="text"] {
+  width: 100%;
+}
+
+.sugestoes-lista {
+  display: none;
+  position: absolute;
+  top: calc(100% + 2px);
+  left: 0;
+  right: 0;
+  background: white;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+  list-style: none;
+  max-height: 220px;
+  overflow-y: auto;
+  z-index: 100;
+}
+
+.sugestoes-lista li {
+  padding: 0.55rem 0.85rem;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background 0.1s;
+}
+
+.sugestoes-lista li:hover,
+.sugestoes-lista li.ativo {
+  background: #eff6ff;
+  color: #1e40af;
+}
+
+.sugestoes-lista li strong { color: #2563eb; }
+
+/* QR button */
+#btn-qr {
+  padding: 0.5rem 0.75rem;
+  background: #1e40af;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.2s;
+  align-self: flex-start;
+  margin-top: 0;
+}
+
+#btn-qr:hover { background: #1d3aaa; }
+
+/* Form actions */
+.form-acoes { margin-top: 1rem; display: flex; gap: 0.75rem; }
+
+button {
+  padding: 0.55rem 1.25rem;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+#btn-salvar { background: #2563eb; color: white; }
+#btn-salvar:hover { background: #1d4ed8; }
+
+.btn-secundario { background: #e5e7eb; color: #374151; }
+.btn-secundario:hover { background: #d1d5db; }
+.btn-sm { padding: 0.3rem 0.75rem; font-size: 0.82rem; }
+
+/* QR section */
+.qr-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.75rem; }
+.qr-instrucao { font-size: 0.9rem; color: #6b7280; margin-bottom: 1rem; }
+#qr-reader { max-width: 400px; margin: 0 auto; border-radius: 8px; overflow: hidden; }
+
+/* Table */
+.lista-header { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem; flex-wrap: wrap; }
+.lista-header h2 { margin-bottom: 0; }
+
+.btn-exportar {
+  margin-left: auto;
+  padding: 0.35rem 0.9rem;
+  background: #059669;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.83rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.btn-exportar:hover { background: #047857; }
+
+/* Filtros */
+.filtros {
+  display: flex;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+}
+.filtros input, .filtros select {
+  padding: 0.45rem 0.75rem;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 0.88rem;
+  background: white;
+  flex: 1;
+  min-width: 140px;
+}
+.filtros input:focus, .filtros select:focus {
+  outline: none;
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37,99,235,0.1);
+}
+
+.badge {
+  background: #dbeafe;
+  color: #1e40af;
+  font-size: 0.78rem;
+  font-weight: 600;
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+}
+
+.tabela-wrapper { overflow-x: auto; }
+
+table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+
+thead th {
+  background: #f8fafc;
+  text-align: left;
+  padding: 0.65rem 0.85rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #6b7280;
+  border-bottom: 2px solid #e5e7eb;
+}
+
+tbody tr { border-bottom: 1px solid #f3f4f6; transition: background 0.15s; }
+tbody tr:hover { background: #f8fafc; }
+tbody td { padding: 0.7rem 0.85rem; color: #374151; }
+
+.carregando { text-align: center; color: #9ca3af; padding: 2rem !important; }
+.estoque-baixo { color: #dc2626; font-weight: 700; }
+
+.acoes { display: flex; gap: 0.4rem; }
+
+.btn-editar { background: #fef3c7; color: #92400e; padding: 0.3rem 0.7rem; font-size: 0.8rem; border-radius: 5px; }
+.btn-editar:hover { background: #fde68a; }
+
+.btn-deletar { background: #fee2e2; color: #991b1b; padding: 0.3rem 0.7rem; font-size: 0.8rem; border-radius: 5px; }
+.btn-deletar:hover { background: #fecaca; }
+
+/* Badges de ação no histórico */
+.badge-acao {
+  display: inline-block;
+  padding: 0.18rem 0.55rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.badge-criou { background: #d1fae5; color: #065f46; }
+.badge-atualizou { background: #fef3c7; color: #92400e; }
+.badge-deletou { background: #fee2e2; color: #991b1b; }
+
+/* Mensagens */
+.mensagem {
+  padding: 0.75rem 1rem;
+  border-radius: 6px;
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.mensagem.sucesso { background: #d1fae5; color: #065f46; border: 1px solid #a7f3d0; }
+.mensagem.erro { background: #fee2e2; color: #991b1b; border: 1px solid #fecaca; }

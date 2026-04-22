@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sistema de Inventário</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header>
+    <div class="header-marca">
+      <span class="marca-fama">FAMA</span><span class="marca-tech">TECH</span>
+      <span class="marca-sub">Sistema de Inventário</span>
+    </div>
+    <div class="usuario-bar">
+      <span id="usuario-nome"></span>
+      <button type="button" id="btn-logout" class="btn-logout">Sair</button>
+    </div>
+  </header>
+
+  <main>
+    <section class="form-section">
+      <h2 id="form-titulo">Adicionar Produto</h2>
+      <form id="form-produto">
+        <input type="hidden" id="produto-id" />
+        <div class="form-grid">
+
+          <div class="campo">
+            <label for="nome-busca">Produto</label>
+            <div class="input-com-botao">
+              <div class="autocomplete-wrapper">
+                <input type="text" id="nome-busca" placeholder="Digite para buscar..." autocomplete="off" required />
+                <input type="hidden" id="nome" />
+                <ul id="sugestoes" class="sugestoes-lista"></ul>
+              </div>
+              <button type="button" id="btn-qr" title="Ler QR Code">&#x1F4F7; QR</button>
+            </div>
+          </div>
+
+          <div class="campo">
+            <label for="categoria">Local</label>
+            <select id="categoria" required>
+              <option value="">Selecione o local</option>
+            </select>
+          </div>
+
+          <div class="campo campo-calc">
+            <label>Quantidade</label>
+            <div class="calc-entrada">
+              <input type="number" id="quantidade-input" placeholder="0" min="0" />
+              <button type="button" id="btn-add-parcela">+ Adicionar</button>
+            </div>
+            <div id="calc-display" class="calc-display" style="display:none">
+              <span id="calc-texto"></span>
+              <button type="button" id="btn-limpar-calc" title="Limpar">✕</button>
+            </div>
+            <input type="hidden" id="quantidade" />
+          </div>
+
+        </div>
+        <div class="form-acoes">
+          <button type="submit" id="btn-salvar">Salvar</button>
+          <button type="button" id="btn-cancelar" class="btn-secundario" style="display:none">Cancelar</button>
+        </div>
+      </form>
+    </section>
+
+    <!-- Leitor QR Code -->
+    <section id="secao-qr" style="display:none" class="form-section">
+      <div class="qr-header">
+        <h2>Leitor de QR Code</h2>
+        <button type="button" id="btn-fechar-qr" class="btn-secundario">Fechar</button>
+      </div>
+      <p class="qr-instrucao">Aponte a câmera para o QR Code do produto.</p>
+      <div id="qr-reader"></div>
+      <div id="qr-resultado" style="display:none" class="mensagem sucesso"></div>
+    </section>
+
+    <!-- Tabela de produtos -->
+    <section class="lista-section">
+      <div class="lista-header">
+        <h2>Produtos em Estoque</h2>
+        <span id="total-produtos" class="badge">0 produtos</span>
+        <button type="button" id="btn-exportar" class="btn-exportar">⬇ Exportar Excel</button>
+      </div>
+
+      <!-- Filtros -->
+      <div class="filtros">
+        <input type="text" id="filtro-nome" placeholder="Buscar produto..." />
+        <select id="filtro-local">
+          <option value="">Todos os locais</option>
+        </select>
+        <button type="button" id="btn-limpar-filtros" class="btn-secundario btn-sm">Limpar</button>
+      </div>
+
+      <div id="mensagem" class="mensagem" style="display:none"></div>
+      <div class="tabela-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Produto</th>
+              <th>Local</th>
+              <th>Quantidade</th>
+              <th>Lançado por</th>
+              <th>Data/Hora</th>
+              <th>Ações</th>
+            </tr>
+          </thead>
+          <tbody id="corpo-tabela">
+            <tr><td colspan="7" class="carregando">Carregando...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Histórico -->
+    <section class="lista-section">
+      <div class="lista-header">
+        <h2>Histórico de Ações</h2>
+        <button type="button" id="btn-atualizar-hist" class="btn-secundario btn-sm">Atualizar</button>
+      </div>
+      <div class="tabela-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>Ação</th>
+              <th>Produto</th>
+              <th>ID Produto</th>
+              <th>Usuário</th>
+              <th>Data/Hora</th>
+            </tr>
+          </thead>
+          <tbody id="corpo-historico">
+            <tr><td colspan="5" class="carregando">Carregando...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+  <script src="https://cdn.sheetjs.com/xlsx-0.20.2/package/dist/xlsx.full.min.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
