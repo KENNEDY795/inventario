@@ -24,7 +24,12 @@ document.getElementById('btn-logout').addEventListener('click', () => {
 
 async function apiFetch(url, opts = {}) {
   const res = await fetch(url, { ...opts, headers: authHeaders() });
-  if (res.status === 401) { window.location.href = 'login.html'; throw new Error('Sessão expirada'); }
+  if (res.status === 401) {
+    localStorage.removeItem('inventario_token');
+    localStorage.removeItem('inventario_usuario');
+    window.location.href = 'login.html';
+    throw new Error('Sessão expirada');
+  }
   return res;
 }
 

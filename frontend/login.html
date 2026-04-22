@@ -202,7 +202,24 @@
       }
     });
 
-    if (localStorage.getItem('inventario_token')) window.location.href = 'index.html';
+    // Valida o token antes de redirecionar — evita loop infinito
+    (async () => {
+      const token = localStorage.getItem('inventario_token');
+      if (!token) return;
+      try {
+        const res = await fetch('/api/produtos', {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        if (res.ok) {
+          window.location.href = 'index.html';
+        } else {
+          localStorage.removeItem('inventario_token');
+          localStorage.removeItem('inventario_usuario');
+        }
+      } catch {
+        // Sem conexão — fica na tela de login
+      }
+    })();
   </script>
 </body>
 </html>
